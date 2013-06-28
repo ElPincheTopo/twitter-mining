@@ -1,16 +1,19 @@
-from tweepy import StreamListener
+from tweepy import StreamListener, API
 import json, time, sys
 
+# ========================================
 class DatabaseListener( StreamListener ):
 
-    def __init__(self, api = None):
-        self.api = api or API()
+    # ----------------------------------------------------------
+    def __init__(self, api, handler):
+        ''' '''
+        self.api = api
+        self.handler = handler
         self.counter = 0
-        self.output  = sys.stdout
-        self.delout  = sys.stderr
 
+    # ----------------------------------------------------------
     def on_data(self, data):
-
+        ''' '''
         if  'in_reply_to_status' in data:
             self.on_status(data)
         elif 'delete' in data:
@@ -25,24 +28,30 @@ class DatabaseListener( StreamListener ):
             print warning['message']
             return false
 
+    # ----------------------------------------------------------
     def on_status(self, status):
-        self.output.write(status + "\n")
-        self.counter += 1
+        ''' '''
+        self.handler.store( status )
         return
 
+    # ----------------------------------------------------------
     def on_delete(self, status_id, user_id):
-        self.delout.write( str(status_id) + "\n")
+        ''' '''
         return
 
+    # ----------------------------------------------------------
     def on_limit(self, track):
-        sys.stderr.write(track + "\n")
+        ''' '''
         return
 
+    # ----------------------------------------------------------
     def on_error(self, status_code):
-        sys.stderr.write('Error: ' + str(status_code) + "\n")
+        ''' '''
         return False
 
+    # ----------------------------------------------------------
     def on_timeout(self):
+        ''' '''
         sys.stderr.write("Timeout, sleeping for 60 seconds...\n")
         time.sleep(60)
         return 

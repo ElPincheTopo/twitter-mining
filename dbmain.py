@@ -1,6 +1,7 @@
 import sys
 
 from listeners import DatabaseListener
+from handlers import SimpleHandler
 import time, tweepy, sys
 
 ## authentication
@@ -10,14 +11,15 @@ api = tweepy.API(auth)
 
 def main():
  
-    stream = tweepy.Stream(auth, DatabaseListener(api) )
+    stream = tweepy.Stream(auth, DatabaseListener( api, SimpleHandler() ) )
 
-    print "Streaming started..."
-    try: 
-        stream.filter(locations=[ -99.36,19.11,-98.97,19.57 ])
-    except:
-        print "error!"
-        stream.disconnect()
+    print >> sys.stderr, "Streaming started..."
+    while True:
+        try: 
+            stream.filter(locations=[ -99.36,19.11,-98.97,19.57 ])
+        except Exception, e:
+            print  >> sys.stderr,  "error! %s" % e
+            stream.disconnect()
 
 if __name__ == '__main__':
     main()
