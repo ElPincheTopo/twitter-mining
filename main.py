@@ -4,12 +4,16 @@ sys.path.append('tweepy-1.8-py2.7.egg')
 from slistener import SListener
 import time, tweepy, sys
 
-## authentication
-auth = tweepy.OAuthHandler('HKxUdwCuKc9sEFsqroOzng', '4cKTl3HXp3lakGos5p7EUs6ojnfrnEVrRmUtDJmQ')
-auth.set_access_token('158718524-mZh3DnPnybuMeoLNbZtecirZavjY7pb44gcDkgWq', '2mxRJS0Ge2foPKMIXhE7AiH1kcfLONMfzEfIrxFRA0o')
-api = tweepy.API(auth)
 
 def main():
+
+    if None in [os.getenv( 'CONSUMER_KEY' ), os.getenv( 'CONSUMER_SECRET' ), os.getenv( 'APPLICATION_KEY'), os.getenv( 'APPLICATION_SECRET') ]:
+        print >> sys.stderr, 'Missing auth tokens'
+        sys.exit(1)
+
+    auth = tweepy.OAuthHandler( os.getenv( 'CONSUMER_KEY' ), os.getenv( 'CONSUMER_SECRET' ) )
+    auth.set_access_token( os.getenv( 'APPLICATION_KEY'), os.getenv( 'APPLICATION_SECRET') )
+    api = tweepy.API(auth)
  
     listen = SListener(api, 'mexico')
     stream = tweepy.Stream(auth, listen)
