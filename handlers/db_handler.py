@@ -22,7 +22,7 @@ def to_str(value):
     if value in [ None, '', [], {} ]: return "''"
     new_val = value
     if type( value ) is dict:
-        new_val = json.dumps( value ).encode( 'utf-8', errors='ignore' ).replace("'", '"')
+        new_val = json.dumps( value ).encode( 'utf-8', 'ignore' ).replace("'", '"')
     return "'%s'" % new_val.replace("'", '"')
 
 
