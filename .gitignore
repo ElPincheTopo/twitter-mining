@@ -3,3 +3,4 @@
 *.pyc
 *.json
 lib
+tokens.sh
