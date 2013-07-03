@@ -13,6 +13,7 @@ INSERT = 'INSERT INTO %s (%s) VALUES (%s);'
 # ----------------------------------------------------------
 def to_int(value):
     ''' '''
+    if value is None: return "0"
     return str(value)
 
 
