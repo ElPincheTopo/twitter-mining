@@ -50,35 +50,62 @@ COLUMNS = [ ('coordinates', ' coordinates', to_str),
                         ('retweet_count', 'retweet_count', to_int),
                         ('source', 'source', to_str),
                         ('text', 'text', to_str),
-                        ('truncated', 'truncated', to_bool),
-                        ('user', 'user_data', to_str) ]
+                        ('truncated', 'truncated', to_bool)
+          ]
+
+
+USER_COLUMNS = [
+    ('created_at', 'created_at', to_date),
+    ('description', 'description', to_str),
+    ('favourites_count', 'favourites_count', to_int),
+    ('followers_count', 'followers_count', to_int),
+    ('friends_count', 'friends_count', to_int),
+    ('geo_enabled', 'geo_enabled', to_bool),
+    ('id_str', 'id_str', to_str),
+    ('lang', 'lang', to_str),
+    ('location', 'location', to_str),
+    ('name', 'name', to_str),
+    ('protected', 'protected', to_bool),
+    ('screen_name', 'screen_name', to_str),
+    ('statuses_count', 'statuses_count', to_int),
+    ('time_zone', 'time_zone', to_str),
+    ('url', 'url', to_str),
+    ('utc_offset', 'utc_offset', to_int),
+    ('verified', 'verified', to_bool)
+]
+
 
 # ========================================
 class SimpleHandler():
     ''' '''
 
     # ----------------------------------------------------------
-    def __init__(self, table=TABLE_NAME, columns=COLUMNS):
+    def __init__(self, table, columns, property=None):
         ''' '''
         self.columns = columns
         self.table_name = table
-        self.columns_insert = ', '.join( [c[1] for c in self.columns ] )
+        self.property = property
+        self.columns_insert = ', '.join( [ column for _, column, _ in self.columns ] )
 
     # ----------------------------------------------------------
     def store( self, status ):
         ''' '''
-        status = json.loads( status.decode( 'utf-8', 'ignore' ) )
-        values = ', '.join( [ c[2]( status[ c[ 0 ] ] ) for c in self.columns ] )
-        print >> sys.stdout, INSERT % ( self.table_name, self.columns_insert, values )
+        if self.property is not None:
+            status = status[ self.property ]
+        values = ', '.join( [ func( status[ column_name ] ) for column_name, _, func in self.columns ] )
+        print INSERT % ( self.table_name, self.columns_insert, values )
 
 
 
 # ========================================
 if __name__ == '__main__':
     import fileinput
-    handler = SimpleHandler()
+    tuit_handler = SimpleHandler(table='tweet', columns=COLUMNS)
+    #user_handler = SimpleHanlder(table='tweet_user', columns=USER_COLUMNS)
     for line in fileinput.input():
-        handler.store( line.strip() )
+        status = json.loads( line.strip().decode( 'utf-8', 'ignore' ) )
+        print status
+        #print >> sys.stdout, tuit_handler.store( status )
 
 
 

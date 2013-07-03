@@ -5,17 +5,17 @@ import json, time, sys
 class DatabaseListener( StreamListener ):
 
     # ----------------------------------------------------------
-    def __init__(self, api, handler):
+    def __init__(self, api, handlers):
         ''' '''
         self.api = api
-        self.handler = handler
+        self.handlers = handlers
         self.counter = 0
 
     # ----------------------------------------------------------
     def on_data(self, data):
         ''' '''
         if  'in_reply_to_status' in data:
-            self.on_status(data)
+            return self.on_status(data)
         elif 'delete' in data:
             delete = json.loads(data)['delete']['status']
             if self.on_delete(delete['id'], delete['user_id']) is False:
@@ -31,8 +31,10 @@ class DatabaseListener( StreamListener ):
     # ----------------------------------------------------------
     def on_status(self, status):
         ''' '''
-        self.handler.store( status )
-        return
+        print  'on status'
+        for handler in self.handlers:
+            handler.store( json.loads( status.strip().decode( 'utf-8', 'ignore' ) ) )
+        return True
 
     # ----------------------------------------------------------
     def on_delete(self, status_id, user_id):
