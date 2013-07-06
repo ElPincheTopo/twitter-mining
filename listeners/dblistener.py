@@ -1,5 +1,7 @@
 from tweepy import StreamListener, API
-import json, time, sys
+import simplejson as json
+import time, sys
+import utils
 
 # ========================================
 class DatabaseListener( StreamListener ):
@@ -31,9 +33,9 @@ class DatabaseListener( StreamListener ):
     # ----------------------------------------------------------
     def on_status(self, status):
         ''' '''
-        print  'on status'
+        tweet = utils.Tweet( from_dict=json.loads( status.strip().decode( 'utf-8', 'ignore' ) ) )
         for handler in self.handlers:
-            handler.store( json.loads( status.strip().decode( 'utf-8', 'ignore' ) ) )
+            handler.store( tweet )
         return True
 
     # ----------------------------------------------------------

@@ -1,5 +1,8 @@
-import json
+import simplejson as json
 import sys, codecs
+
+from utils import Tweet
+from utils import *
 
 # set up output encoding
 if not sys.stdout.isatty():
@@ -11,68 +14,26 @@ TABLE_NAME = 'tweet'
 INSERT = 'INSERT INTO %s (%s) VALUES (%s);'
 
 # ----------------------------------------------------------
-def to_int(value):
-    ''' '''
-    if value is None: return "0"
-    return str(value)
-
-
-# ----------------------------------------------------------
-def to_str(value):
-    ''' '''
-    if value in [ None, '', [], {} ]: return "''"
-    new_val = value
-    if type( value ) is dict:
-        new_val = json.dumps( value ).encode( 'utf-8', 'ignore' ).replace("'", '"')
-    return "'%s'" % new_val.replace("'", '"')
-
-
-# ----------------------------------------------------------
-def to_date(value):
-    ''' '''
-    return "'%s'::timestamp" % value
-
-
-# ----------------------------------------------------------
-def to_bool(value):
-    ''' '''
-    return 'True' if value else 'False'
-
-
-# ----------------------------------------------------------
-COLUMNS = [ ('coordinates', ' coordinates', to_str),
-                        ('created_at', 'created_at', to_date),
-                        ('entities', 'entities', to_str),
-                        ('id_str', 'id_str', to_str),
-                        ('in_reply_to_screen_name', 'in_reply_to_screen_name', to_str),
-                        ('in_reply_to_status_id_str', 'in_reply_to_status_id_str', to_str),
-                        ('in_reply_to_user_id_str', 'in_reply_to_user_id_str', to_str),
-                        ('place', 'place', to_str),
-                        ('retweet_count', 'retweet_count', to_int),
-                        ('source', 'source', to_str),
-                        ('text', 'text', to_str),
-                        ('truncated', 'truncated', to_bool)
-          ]
 
 
 USER_COLUMNS = [
-    ('created_at', 'created_at', to_date),
-    ('description', 'description', to_str),
-    ('favourites_count', 'favourites_count', to_int),
-    ('followers_count', 'followers_count', to_int),
-    ('friends_count', 'friends_count', to_int),
-    ('geo_enabled', 'geo_enabled', to_bool),
-    ('id_str', 'id_str', to_str),
-    ('lang', 'lang', to_str),
-    ('location', 'location', to_str),
-    ('name', 'name', to_str),
-    ('protected', 'protected', to_bool),
-    ('screen_name', 'screen_name', to_str),
-    ('statuses_count', 'statuses_count', to_int),
-    ('time_zone', 'time_zone', to_str),
-    ('url', 'url', to_str),
-    ('utc_offset', 'utc_offset', to_int),
-    ('verified', 'verified', to_bool)
+    ('created_at', 'created_at', from_date),
+    ('description', 'description', from_str),
+    ('favourites_count', 'favourites_count', from_int),
+    ('followers_count', 'followers_count', from_int),
+    ('friends_count', 'friends_count', from_int),
+    ('geo_enabled', 'geo_enabled', from_bool),
+    ('id_str', 'id_str', from_str),
+    ('lang', 'lang', from_str),
+    ('location', 'location', from_str),
+    ('name', 'name', from_str),
+    ('protected', 'protected', from_bool),
+    ('screen_name', 'screen_name', from_str),
+    ('statuses_count', 'statuses_count', from_int),
+    ('time_zone', 'time_zone', from_str),
+    ('url', 'url', from_str),
+    ('utc_offset', 'utc_offset', from_int),
+    ('verified', 'verified', from_bool)
 ]
 
 
@@ -86,15 +47,14 @@ class SimpleHandler():
         self.columns = columns
         self.table_name = table
         self.property = property
-        self.columns_insert = ', '.join( [ column for _, column, _ in self.columns ] )
+        self.columns_insert = ', '.join( [ column.column_name for column in self.columns ] )
 
     # ----------------------------------------------------------
-    def store( self, status ):
+    def store( self, tweet ):
         ''' '''
-        if self.property is not None:
-            status = status[ self.property ]
-        values = ', '.join( [ func( status[ column_name ] ) for column_name, _, func in self.columns ] )
+        values = ', '.join( [ column.convert_func( column.extract_func( tweet ) ) for column in self.columns ] )
         print INSERT % ( self.table_name, self.columns_insert, values )
+        
 
 
 
