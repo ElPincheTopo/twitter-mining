@@ -21,11 +21,10 @@ class SimpleHandler():
     ''' '''
 
     # ----------------------------------------------------------
-    def __init__(self, table, columns, property=None):
+    def __init__(self, table, columns):
         ''' '''
         self.columns = columns
         self.table_name = table
-        self.property = property
         self.columns_insert = ', '.join( [ column.column_name for column in self.columns ] )
 
     # ----------------------------------------------------------

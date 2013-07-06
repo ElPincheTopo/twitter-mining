@@ -23,27 +23,6 @@ TWEET_COLUMNS = [
         utils.DbColumn( 'user_id', extract_func=operator.attrgetter('user.id_str'), convert_func=utils.from_str )
     ]
 
-'''
-USER_COLUMNS = [
-    ('created_at', 'created_at', from_date),
-    ('description', 'description', from_str),
-    ('favourites_count', 'favourites_count', from_int),
-    ('followers_count', 'followers_count', from_int),
-    ('friends_count', 'friends_count', from_int),
-    ('geo_enabled', 'geo_enabled', from_bool),
-    ('id_str', 'id_str', from_str),
-    ('lang', 'lang', from_str),
-    ('location', 'location', from_str),
-    ('name', 'name', from_str),
-    ('protected', 'protected', from_bool),
-    ('screen_name', 'screen_name', from_str),
-    ('statuses_count', 'statuses_count', from_int),
-    ('time_zone', 'time_zone', from_str),
-    ('url', 'url', from_str),
-    ('utc_offset', 'utc_offset', from_int),
-    ('verified', 'verified', from_bool)
-]
-'''
 USER_COLUMNS = [
         utils.DbColumn( 'created_at', extract_func=operator.attrgetter( 'user.created_at' ), convert_func=utils.from_date ),
         utils.DbColumn( 'description', extract_func=operator.attrgetter( 'user.description' ), convert_func=utils.from_str ),
