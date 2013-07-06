@@ -16,27 +16,6 @@ INSERT = 'INSERT INTO %s (%s) VALUES (%s);'
 # ----------------------------------------------------------
 
 
-USER_COLUMNS = [
-    ('created_at', 'created_at', from_date),
-    ('description', 'description', from_str),
-    ('favourites_count', 'favourites_count', from_int),
-    ('followers_count', 'followers_count', from_int),
-    ('friends_count', 'friends_count', from_int),
-    ('geo_enabled', 'geo_enabled', from_bool),
-    ('id_str', 'id_str', from_str),
-    ('lang', 'lang', from_str),
-    ('location', 'location', from_str),
-    ('name', 'name', from_str),
-    ('protected', 'protected', from_bool),
-    ('screen_name', 'screen_name', from_str),
-    ('statuses_count', 'statuses_count', from_int),
-    ('time_zone', 'time_zone', from_str),
-    ('url', 'url', from_str),
-    ('utc_offset', 'utc_offset', from_int),
-    ('verified', 'verified', from_bool)
-]
-
-
 # ========================================
 class SimpleHandler():
     ''' '''
