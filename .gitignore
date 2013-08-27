@@ -2,5 +2,9 @@
 *.txt
 *.pyc
 *.json
+tokens.sh
+clubtokens.sh
 lib
 tokens.sh
+simplejson
+t.py
